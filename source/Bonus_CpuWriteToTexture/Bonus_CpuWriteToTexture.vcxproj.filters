@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="RenderingGame.cpp" />
+    <ClCompile Include="CpuWriteToTextureDemo.cpp" />
+    <ClCompile Include="RastMode.cpp" />
+    <ClCompile Include="material.cpp">
+      <Filter>Ray</Filter>
+    </ClCompile>
+    <ClCompile Include="rcCamera.cpp">
+      <Filter>Ray</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RenderingGame.h" />
+    <ClInclude Include="CpuWriteToTextureDemo.h" />
+    <ClInclude Include="RastMode.h" />
+    <ClInclude Include="..\Library.Shared\hittable.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="ray.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="hittable_list.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="rcCamera.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="vec3.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="RayHelper.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="ray.inl">
+      <Filter>Ray</Filter>
+    </None>
+    <None Include="sphere.inl">
+      <Filter>Ray</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Ray">
+      <UniqueIdentifier>{b044f345-1907-4888-a8aa-d8491a560465}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
