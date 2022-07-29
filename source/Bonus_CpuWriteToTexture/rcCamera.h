@@ -33,7 +33,7 @@ namespace Rendering::Hybrid //TODO: change namspce to libary
                 float viewport_height = 2.0f * h;
                 float viewport_width = aspect_ratio * viewport_height;
 
-                w = unit_vector(lookfrom - lookat);
+            /*    w = unit_vector(lookfrom - lookat);
                 u = unit_vector(cross(vup, w));
                 v = cross(w, u);
 
@@ -42,10 +42,22 @@ namespace Rendering::Hybrid //TODO: change namspce to libary
                 vertical = focus_dist * viewport_height * v;
                 lower_left_corner = origin - horizontal / 2.0f - vertical / 2.0f - focus_dist * w;
 
-                lens_radius = aperture / 2.0f;
-            }
+                lens_radius = aperture / 2.0f;*/
+            
 
-            ray get_ray(float s, float t) const {
+            auto focal_length = 1.0;
+
+            origin = point3(0, 0, 0);
+            horizontal = vec3(viewport_width, 0.0, 0.0);
+            vertical = vec3(0.0, viewport_height, 0.0);
+            lower_left_corner = origin - horizontal / 2 - vertical / 2 - vec3(0, 0, focal_length);
+    }
+
+             ray get_ray(double u, double v) const {
+                 return ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+             }
+
+          /*  ray get_ray(float s, float t) const {
                 vec3 rd = lens_radius * random_in_unit_disk();
                 vec3 offset = u * rd.x() + v * rd.y();
 
@@ -53,7 +65,7 @@ namespace Rendering::Hybrid //TODO: change namspce to libary
                     origin + offset,
                     lower_left_corner + s * horizontal + t * vertical - origin - offset
                 );
-            }
+            }*/
     
 
     private:
