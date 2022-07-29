@@ -102,6 +102,8 @@ namespace Rendering
 
 	void CpuWriteToTextureDemo::WritePixelToBuffer(uint8_t* buffer, unsigned int ix, unsigned int iy, unsigned int samples_per_pixel,color pixel_color) 
 	{
+		// flip the vertical coordinate because the display backend follow the opposite convention
+		iy = mGame->RenderTargetSize().cy - 1 - iy;
 
 		auto r = pixel_color.x();
 		auto g = pixel_color.y();
@@ -143,69 +145,48 @@ namespace Rendering
 
 	void CpuWriteToTextureDemo::computeRTImage(uint8_t* buffer)
 	{
-		// render blue white gradient
-
-		// Image
-		//const float aspect_ratio = (float)(16.0 / 12.0);
-		const int image_width = mGame->RenderTargetSize().cx;
-		const int image_height = mGame->RenderTargetSize().cy;
-		const float aspect_ratio = (float)(16.0 / 12.0);
-		//
 		
-		// World
-		hittable_list world;
-		//world.add(make_shared<sphere>(XMFLOAT4(0, 0, -1, 0), static_cast <float>(0.5)));
-		//world.add(make_shared<sphere>(XMFLOAT4(0, -100.5, -1, 0), static_cast <float>(100)));
+		color background(0, 0, 0);
 
+		 // Image
+
+		const auto aspect_ratio = 3.0 / 2.0;
+		const int image_width = mGame->RenderTargetSize().cx;
+		const int image_height = static_cast<int>(image_width / aspect_ratio);
+		//const int samples_per_pixel = 500;
+	//	const int max_depth = 50;
+
+		// World
+
+	//	auto world = random_scene();
+
+		//cam
+		point3 lookfrom(13.0f, 2.0f, 3.0f);
+		point3 lookat(0.0f, 0.0f, 0.0f);
+		vec3 vup(0.0f, 1.0f, 0.0f);
+		auto dist_to_focus = 10.0f;
+		auto aperture = 0.1f;
+		rcCamera cam(lookfrom, lookat, vup, 20.0f, aspect_ratio, aperture, dist_to_focus);
+
+
+		hittable_list world;
 
 		auto material_ground = make_shared<lambertian>(color(0.8f, 0.8f, 0.0f));
-		auto material_center = make_shared<lambertian>(color(0.7f, 0.3f, 0.3f));
-		auto material_left = make_shared<metal>(color(0.8f, 0.8f, 0.8f), 0.3f);
-		auto material_right = make_shared<metal>(color(0.8f, 0.6f, 0.2f), 0.5f);
+		auto material_center = make_shared<lambertian>(color(0.1f, 0.2f, 0.5f));
+		auto material_left = make_shared<dielectric>(1.5f);
+		auto material_right = make_shared<metal>(color(0.8f, 0.6f, 0.2f), 0.0f);
 
-		world.add(make_shared<sphere>(point3(0.0f, -100.5f, -1.0f), static_cast <float>(100.0), material_ground));
-		world.add(make_shared<sphere>(point3(0.0f, 0.0f, -1.0f), static_cast <float>(0.5), material_center));
-		world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), static_cast <float>(0.5), material_left));
-		world.add(make_shared<sphere>(point3(1.0f, 0.0f, -1.0f), static_cast <float>(0.5), material_right));
+		world.add(make_shared<sphere>(point3(0.0f, -100.5f, -1.0f), 100.0f, material_ground));
+		world.add(make_shared<sphere>(point3(0.0f, 0.0f, -1.0f), 0.5f, material_center));
+		world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), 0.5f, material_left));
+		world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), -0.45f, material_left));
+		world.add(make_shared<sphere>(point3(1.0f, 0.0f, -1.0f), 0.5f, material_right));
 
-
-
-		/*auto material1 = make_shared<dielectric>(1.5f);
-		world.add(make_shared<sphere>(point3(0.0f, 1.0f, 0.0f), 1.0f, material1));
-
-		auto material2 = make_shared<lambertian>(color(0.4f, 0.2f, 0.1f));
-		world.add(make_shared<sphere>(point3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
-
-		auto material3 = make_shared<metal>(color(0.7f, 0.6f, 0.5f), 0.0f);
-		world.add(make_shared<sphere>(point3(4.0f, 1.0f, 0.0f), 1.0f, material3));*/
+		//rcCamera cam(point3(-2, 2, 1), point3(0, 0, -1), vec3(0, 1, 0), 90, aspect_ratio);
 
 
-
-
-
-		// Camera
-		//cam center at (0,0,0) and y go in to the right
-
-		//float viewport_height = 2.0;
-		//float viewport_width = aspect_ratio * viewport_height;
-		//float focal_length = 1.0;
-		//XMFLOAT4 _origin(0 , 0 ,0, 0);
-		//auto origin = XMLoadFloat4(&_origin);
-		//XMFLOAT4 _horizontal(viewport_width, 0, 0, 0);
-		//auto horizontal = XMLoadFloat4(&_horizontal);
-		//XMFLOAT4 _vertical(0, viewport_height, 0, 0);
-		//auto vertical = XMLoadFloat4(&_vertical);
-		//XMFLOAT4 _FL(0, 0, focal_length, 0);
-		//auto FL = XMLoadFloat4(&_FL);
-		//auto lower_left_corner = origin - horizontal / 2 - vertical / 2 - FL;
-
-		point3 lookfrom(13, 2, 3);
-		point3 lookat(0, 0, 0);
-		vec3 vup(0, 1, 0);
-		//auto dist_to_focus = 10.0;
-		//auto aperture = 0.1;
-		
-		rcCamera cam;
+	//	rcCamera cam;
+	//	rcCamera cam(point3(-2, 2, 1), point3(0, 0, -1), vec3(0, 1, 0), 20, aspect_ratio);
 
 		if (jCounter == 0)
 		{
@@ -262,71 +243,56 @@ namespace Rendering
 			
 	}
 
-	//color CpuWriteToTextureDemo::ray_color(const Ray& r)
-	//{
-	//	r;
-	//	float t = hit_sphere(point4(0, 0, -1, 1), 0.5, r);
-	//	/*if (t > 0.0) {
+	hittable_list CpuWriteToTextureDemo::random_scene()
+	{
+		hittable_list world;
 
-	//		XMFLOAT4 t1(0, 0, -1, 1);
-	//		auto _t1 = XMLoadFloat4(&t1);
-	//		
-	//		XMVECTOR toUnit =  r.at(t) - _t1;
-	//		XMStoreFloat4(&t1, toUnit);
-	//		XMFLOAT4 N = unit_vector(t1);
+		auto checker = make_shared<checker_texture>(color(0.2f, 0.3f, 0.1f), color(0.9f, 0.9f, 0.9f));
+		world.add(make_shared<sphere>(point3(0.0f, -1000.0f, 0.0f), 1000.0f, make_shared<lambertian>(checker)));
 
-	//		XMFLOAT4 _color(N.x + 1, N.y + 1, N.z + 1, 1);
-	//		_color.x *= 0.5;
-	//		_color.y *= 0.5;
-	//		_color.z *= 0.5;
-	//		_color.w *= 0.5;
+		
 
-	//		return _color;
-	//	}
-	//	XMFLOAT4 unit_direction = unit_vector(r.direction());
-	//	t = (float)0.5 * (float)(unit_direction.y + 1.0);
-	//	
-	//	t = (float) 1.0 - t; 
-	//	XMFLOAT4 t2((float)1.0*((float)1.0-t), (float)1.0*((float)1.0 - t), (float)1.0*((float)1.0 - t), (float)1.0*((float)1.0 - t));
+		for (int a = -11; a < 11; a++) {
+			for (int b = -11; b < 11; b++) {
+				auto choose_mat = random_float();
+				point3 center(a + 0.9f * random_float(), 0.2f, b + 0.9f * random_float());
 
-	//	XMFLOAT4 t3((float)0.5*t, (float)0.7*t, (float)1.0*t, (float)1.0*t);
+				if ((center - point3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
+					shared_ptr<material> sphere_material;
 
-	//	t2.x += t3.x;
-	//	t2.y += t3.y;
-	//	t2.z += t3.z;
-	//	t2.w += t3.w;*/
+					if (choose_mat < 0.8f) {
+						// diffuse
+						auto albedo = color::random() * color::random();
+						sphere_material = make_shared<lambertian>(albedo);
+						world.add(make_shared<sphere>(center, 0.2f, sphere_material));
+					}
+					else if (choose_mat < 0.95) {
+						// metal
+						auto albedo = color::random(0.5f, 1.0f);
+						auto fuzz = random_float(0.0f, 0.5f);
+						sphere_material = make_shared<metal>(albedo, fuzz);
+						world.add(make_shared<sphere>(center, 0.2f, sphere_material));
+					}
+					else {
+						// glass
+						sphere_material = make_shared<dielectric>(1.5f);
+						world.add(make_shared<sphere>(center, 0.2f, sphere_material));
+					}
+				}
+			}
+		}
 
-	//	//return t2;
+		auto material1 = make_shared<dielectric>(1.5f);
+		world.add(make_shared<sphere>(point3(0.0f, 1.0f, 0.0f), 1.0f, material1));
 
-	//	return color(1, 1, 1, 1);
-	//}
+		auto material2 = make_shared<lambertian>(color(0.4f, 0.2f, 0.1f));
+		world.add(make_shared<sphere>(point3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
 
-	//inline XMFLOAT4 CpuWriteToTextureDemo::unit_vector(XMFLOAT4 v)
-	//{
-	//	XMFLOAT4 unitV;
-	//	unitV.x = v.x / length(v);
-	//	unitV.y = v.y / length(v);
-	//	unitV.z = v.z / length(v);
-	//	return  unitV;
-	//}
+		auto material3 = make_shared<metal>(color(0.7f, 0.6f, 0.5f), 0.0f);
+		world.add(make_shared<sphere>(point3(4.0f, 1.0f, 0.0f), 1.0f, material3));
 
-	//inline float CpuWriteToTextureDemo::length(XMFLOAT4 _values) const
-	//{
-	//	return sqrtf(length_squared(_values));
-	//}
-
-	//inline float CpuWriteToTextureDemo::length_squared(XMFLOAT4 _values) const
-	//{
-	//	return _values.x * _values.x + _values.y * _values.y + _values.z * _values.z + _values.w * _values.w;
-	//}
-
-	//inline float CpuWriteToTextureDemo::dot(const XMFLOAT4& u, const XMFLOAT4& v)
-	//{
-	//	return u.x * v.x
-	//		+ u.y * v.y
-	//		+ u.z * v.z;
-	//	//	+ u[3] * v[3];
-	//}
+		return world;
+	}
 
 	
 

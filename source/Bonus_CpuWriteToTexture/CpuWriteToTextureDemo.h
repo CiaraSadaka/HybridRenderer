@@ -66,6 +66,9 @@ namespace Rendering
 		size_t BufferSize() const;
 		void CreateImageBuffer();
 		color ray_color(const Hybrid::ray& r, const Hybrid::hittable& world, int depth);
+
+
+		hittable_list random_scene();
 		/*XMFLOAT4 unit_vector(XMFLOAT4 v);
 		float dot(const XMFLOAT4& u, const XMFLOAT4& v);
 
@@ -78,7 +81,7 @@ namespace Rendering
 
 		int jCounter{0};
 		int samples_per_pix{ 50 };
-		const int max_depth{ 100 };
+		const int max_depth{100 };
 
 		std::unique_ptr < uint8_t[] > ImageBuffer;
 		inline static const std::chrono::seconds _textureUpdateDelay { 0};

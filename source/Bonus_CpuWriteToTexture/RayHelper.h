@@ -45,6 +45,11 @@ using namespace DirectX;
             return static_cast<int>(random_float(static_cast<float>(min), static_cast<float>(max) + 1.0f));
         }
 
+        inline float degrees_to_radians(float degrees) {
+            return degrees * pi / 180.0f;
+        }
+
+
 		
 
 #include "ray.h"
