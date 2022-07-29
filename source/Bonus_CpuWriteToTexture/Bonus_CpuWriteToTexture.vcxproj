@@ -191,9 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Library.Shared\hittable.h" />
-    <ClInclude Include="texture.h" />
     <ClInclude Include="CpuWriteToTextureDemo.h" />
-    <ClInclude Include="aarect.h" />
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="RastMode.h" />
@@ -202,7 +200,6 @@
     <ClInclude Include="rcCamera.h" />
     <ClInclude Include="RenderingGame.h" />
     <ClInclude Include="sphere.h" />
-    <ClInclude Include="aabb.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
   <ItemGroup>

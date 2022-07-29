@@ -4,8 +4,6 @@
 //#include "vec3.h"
 #include "RayHelper.h"
 #include "hittable.h"
-#include "texture.h"
-
 //#include "Ray.h"
 //#include <DirectXMath.h>
 //#include "hittable.h"
@@ -21,46 +19,15 @@ namespace Rendering::Hybrid
 
     class material {
     public:
-        virtual color emitted(float u, float v, const point3& p) const {
-            u;
-            v;
-            p;
-
-            return color(0, 0, 0);
-        }
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
         ) const = 0;
     };
 
-    class diffuse_light : public material {
-    public:
-        diffuse_light(shared_ptr<texture> a) : emit(a) {}
-        diffuse_light(color c) : emit(make_shared<solid_color>(c)) {}
-
-        virtual bool scatter(
-            const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
-        ) const override {
-            r_in;
-            rec;
-            attenuation;
-            scattered;
-            return false;
-        }
-
-        virtual color emitted(float u, float v, const point3& p) const override {
-            return emit->value(u, v, p);
-        }
-
-    public:
-        shared_ptr<texture> emit;
-    };
 
     class lambertian : public material {
     public:
-
-        lambertian(const color& a) : albedo(make_shared<solid_color>(a)) {}
-        lambertian(shared_ptr<texture> a) : albedo(a) {}
+        lambertian(const color& a) : albedo(a) {}
 
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
@@ -73,12 +40,12 @@ namespace Rendering::Hybrid
                 scatter_direction = rec.normal;
 
             scattered = ray(rec.p, scatter_direction);
-            attenuation = albedo->value(rec.u, rec.v, rec.p);
+            attenuation = albedo;
             return true;
         }
 
     public:
-        shared_ptr<texture> albedo;
+        color albedo;
     };
 
 
@@ -115,7 +82,7 @@ namespace Rendering::Hybrid
             float cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0f);
             float sin_theta = sqrt(1.0f - cos_theta * cos_theta);
 
-            bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
+            bool cannot_refract = refraction_ratio * sin_theta > 1.0;
             vec3 direction;
 
             if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_float())

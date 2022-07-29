@@ -223,13 +223,13 @@ inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
 
-inline vec3 random_in_unit_disk() {
-    while (true) {
-        auto p = vec3(random_float(-1, 1), random_float(-1, 1), 0);
-        if (p.length_squared() >= 1) continue;
-        return p;
-    }
-}
+//inline vec3 random_in_unit_disk() {
+//    while (true) {
+//        auto p = vec3(random_float(-1, 1), random_float(-1, 1), 0);
+//        if (p.length_squared() >= 1) continue;
+//        return p;
+//    }
+//}
 
 inline vec3 random_in_unit_sphere() {
     while (true) {

@@ -40,15 +40,6 @@
     <ClInclude Include="RayHelper.h">
       <Filter>Ray</Filter>
     </ClInclude>
-    <ClInclude Include="aarect.h">
-      <Filter>Ray</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Ray</Filter>
-    </ClInclude>
-    <ClInclude Include="aabb.h">
-      <Filter>Ray</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
