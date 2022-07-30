@@ -30,6 +30,7 @@
 //#include "ray.h"
 #include "material.h"
 #include "rcCamera.h"
+#include "aarect.h"
 //#include "vec3.h"
 
 
@@ -65,8 +66,11 @@ namespace Rendering
 
 		size_t BufferSize() const;
 		void CreateImageBuffer();
-		color ray_color(const Hybrid::ray& r, const Hybrid::hittable& world, int depth);
-		hittable_list random_scene();
+		color ray_color(const ray& r, const color& background, const hittable& world, int depth);
+		hittable_list random_scene();	
+		hittable_list two_spheres();
+		hittable_list two_perlin_spheres();
+		hittable_list simple_light();
 		/*XMFLOAT4 unit_vector(XMFLOAT4 v);
 		float dot(const XMFLOAT4& u, const XMFLOAT4& v);
 
@@ -78,7 +82,7 @@ namespace Rendering
 
 
 		int jCounter{0};
-		int samples_per_pix{  10};
+		int samples_per_pix{ 100};
 		const int max_depth{ 50 };
 
 		std::unique_ptr < uint8_t[] > ImageBuffer;
@@ -93,5 +97,7 @@ namespace Rendering
 		std::chrono::high_resolution_clock::time_point _lastTextureUpdate;
 
 	};
+
+
 
 }

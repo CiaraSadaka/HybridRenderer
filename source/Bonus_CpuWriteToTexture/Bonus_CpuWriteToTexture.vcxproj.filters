@@ -46,6 +46,15 @@
     <ClInclude Include="bvh.h">
       <Filter>Ray</Filter>
     </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="perlin.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="aarect.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

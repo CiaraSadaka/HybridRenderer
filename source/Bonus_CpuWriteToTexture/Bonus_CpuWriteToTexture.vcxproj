@@ -192,16 +192,19 @@
   <ItemGroup>
     <ClInclude Include="..\Library.Shared\hittable.h" />
     <ClInclude Include="aabb.h" />
+    <ClInclude Include="aarect.h" />
     <ClInclude Include="bvh.h" />
     <ClInclude Include="CpuWriteToTextureDemo.h" />
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="material.h" />
+    <ClInclude Include="perlin.h" />
     <ClInclude Include="RastMode.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="RayHelper.h" />
     <ClInclude Include="rcCamera.h" />
     <ClInclude Include="RenderingGame.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
   <ItemGroup>
