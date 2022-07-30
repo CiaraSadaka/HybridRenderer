@@ -13,6 +13,7 @@
 #include "ImGuiComponent.h"
 #include "imgui_impl_dx11.h"
 #include "UtilityWin32.h"
+#include "Grid.h"
 
 using namespace std;
 using namespace DirectX;
@@ -39,9 +40,15 @@ namespace Rendering
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());*/
 
+		
 		auto camera = make_shared<FirstPersonCamera>(*this);
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());
+
+
+		mGrid = make_shared<Grid>(*this, camera);
+		mComponents.push_back(mGrid);
+
 
 		mImGuiComponent = make_shared<ImGuiComponent>(*this);
 		mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
@@ -134,6 +141,7 @@ namespace Rendering
 		mImGuiComponent->Shutdown();
 		mImGuiComponent = nullptr;
 		mCpuWriteToTextureDemo = nullptr;
+		mRastMode = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 		Game::Shutdown();		

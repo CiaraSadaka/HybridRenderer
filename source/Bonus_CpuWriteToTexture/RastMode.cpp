@@ -113,6 +113,43 @@ namespace Rendering
 		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
 	}
 
+	//void RastMode::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	//{
+	//	const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
+
+	//	vector<VertexPositionColor> vertices;
+	//	vertices.reserve(sourceVertices.size());
+	//	if (mesh.VertexColors().size() > 0)
+	//	{
+	//		const vector<XMFLOAT4>& vertexColors = mesh.VertexColors().at(0);
+	//		assert(vertexColors.size() == sourceVertices.size());
+
+	//		for (size_t i = 0; i < sourceVertices.size(); i++)
+	//		{
+	//			const XMFLOAT3& position = sourceVertices.at(i);
+	//			const XMFLOAT4& color = vertexColors.at(i);
+	//			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		for (size_t i = 0; i < sourceVertices.size(); i++)
+	//		{
+	//			const XMFLOAT3& position = sourceVertices.at(i);
+	//			XMFLOAT4 color = ColorHelper::RandomColor();
+	//			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
+	//		}
+	//	}
+
+	//	D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
+	//	vertexBufferDesc.ByteWidth = VertexPositionColor::VertexBufferByteWidth(vertices.size());
+	//	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	//	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	//	D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
+	//	vertexSubResourceData.pSysMem = &vertices[0];
+	//	ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+	//}
 	void RastMode::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();

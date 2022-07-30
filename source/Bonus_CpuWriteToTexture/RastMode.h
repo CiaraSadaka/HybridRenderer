@@ -33,6 +33,8 @@ namespace Rendering
 		};
 
 		void CreateVertexBuffer(const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
+		//void CreateVertexBuffer(ID3D11Device* device, const Mesh& mesh, ID3D11Buffer** vertexBuffer) const;
+
 
 		inline static const float RotationRate{ DirectX::XM_PI };
 

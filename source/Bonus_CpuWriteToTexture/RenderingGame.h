@@ -9,6 +9,7 @@ namespace Library
 	class KeyboardComponent;
 	class ImGuiComponent;
 	class FpsComponent;
+	class Grid;
 }
 
 namespace Rendering
@@ -39,6 +40,7 @@ namespace Rendering
 		std::shared_ptr<Library::ImGuiComponent> mImGuiComponent;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<CpuWriteToTextureDemo> mCpuWriteToTextureDemo;
+		std::shared_ptr<Library::Grid> mGrid;
 		std::shared_ptr<RastMode> mRastMode;
 	};
 }
