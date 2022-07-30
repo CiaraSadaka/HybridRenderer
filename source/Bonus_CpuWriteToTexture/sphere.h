@@ -23,15 +23,24 @@ namespace Rendering::Hybrid
         sphere(point3 cen, float r, shared_ptr<material> m)
             : center(cen), radius(r), mat_ptr(m) {};
 
-        virtual bool hit(
-            const ray& r, float t_min, float t_max, hit_record& rec) const override;
+        virtual bool hit( const ray& r, float t_min, float t_max, hit_record& rec) const override;
 
+        virtual bool bounding_box(float time0, float time1, aabb& output_box) const override;
+   
     public:
         point3 center;
         float radius;
         shared_ptr<material> mat_ptr;
     };
 
+   inline bool sphere::bounding_box(float time0, float time1, aabb& output_box) const {
+        output_box = aabb(
+            center - vec3(radius, radius, radius),
+            center + vec3(radius, radius, radius));
+        time1;
+        time0;
+        return true;
+    }
 
    inline bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
         vec3 oc = r.origin() - center;

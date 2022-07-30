@@ -103,6 +103,7 @@ namespace Rendering
 	void CpuWriteToTextureDemo::WritePixelToBuffer(uint8_t* buffer, unsigned int ix, unsigned int iy, unsigned int samples_per_pixel,color pixel_color) 
 	{
 
+		iy = mGame->RenderTargetSize().cy - 1 - iy;
 		auto r = pixel_color.x();
 		auto g = pixel_color.y();
 		auto b = pixel_color.z();
@@ -148,25 +149,70 @@ namespace Rendering
 		// Image
 		//const float aspect_ratio = (float)(16.0 / 12.0);
 		const int image_width = mGame->RenderTargetSize().cx;
-		const int image_height = mGame->RenderTargetSize().cy;
-		const float aspect_ratio = (float)(16.0 / 12.0);
+		//const int image_height = mGame->RenderTargetSize().cy;
+
+		const float aspect_ratio = (float)(3.0 / 2.0);
+
 		//
 		
 		// World
-		hittable_list world;
+	
+
+
+		//hittable_list world;
+
+		//auto material_ground = make_shared<lambertian>(color(0.8f, 0.8f, 0.0f));
+		//auto material_center = make_shared<lambertian>(color(0.1f, 0.2f, 0.5f));
+		//auto material_left = make_shared<dielectric>(1.5f);
+		//auto material_right = make_shared<metal>(color(0.8f, 0.6f, 0.2f), 0.0f);
+
+		//world.add(make_shared<sphere>(point3(0.0f, -100.5f, -1.0f), 100.0f, material_ground));
+		//world.add(make_shared<sphere>(point3(0.0f, 0.0f, -1.0f), 0.5f, material_center));
+		//world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), 0.5f, material_left));
+		//world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), -0.45f, material_left));
+		//world.add(make_shared<sphere>(point3(1.0f, 0.0f, -1.0f), 0.5f, material_right));
+		
+		
+		auto world = random_scene();
+
+		point3 lookfrom(13.0f, 2.0f, 3.0f);
+		point3 lookat(0.0f, 0.0f, -1.0f);
+		vec3 vup(0.0f, 1.0f, 0.0f);
+		auto dist_to_focus = 10.0f;
+		auto aperture = 0.1f;
+
+		rcCamera cam(lookfrom, lookat, vup, 20.0f, aspect_ratio, aperture, dist_to_focus);
+		//rcCamera cam(point3(-2.0f, 2.0f, 1.0f), point3(0.0f, 0.0f, -1.0f), vec3(0.0f, 1.0f, 0.0f), 90.0f, aspect_ratio);
+	//	rcCamera cam(point3(-2.0f, 2.0f, 1.0f), point3(0.0f, 0.0f, -1.0f), vec3(0.0f, 1.0f, 0.0f), 20.0f, aspect_ratio);
+		//auto R = cos(pi / 4.0f);
+
+		//hittable_list world;
+
+		//auto material_left = make_shared<lambertian>(color(0.0f, 0.0f, 1.0f));
+		//auto material_right = make_shared<lambertian>(color(1.0f, 0.0f, 0.0f));
+
+		//world.add(make_shared<sphere>(point3(-R, 0.0f, -1.0f), R, material_left));
+		//world.add(make_shared<sphere>(point3(R, 0.0f, -1.0f), R, material_right));
+
+		//// Camera
+
+		//rcCamera cam(90.0f, aspect_ratio);
+
+
+
 		//world.add(make_shared<sphere>(XMFLOAT4(0, 0, -1, 0), static_cast <float>(0.5)));
 		//world.add(make_shared<sphere>(XMFLOAT4(0, -100.5, -1, 0), static_cast <float>(100)));
 
 
-		auto material_ground = make_shared<lambertian>(color(0.8f, 0.8f, 0.0f));
-		auto material_center = make_shared<lambertian>(color(0.7f, 0.3f, 0.3f));
-		auto material_left = make_shared<metal>(color(0.8f, 0.8f, 0.8f), 0.3f);
-		auto material_right = make_shared<metal>(color(0.8f, 0.6f, 0.2f), 0.5f);
+		/*auto material_ground = make_shared<lambertian>(color(0.8f, 0.8f, 0.0f));
+		auto material_center = make_shared<dielectric>(1.5f);
+		auto material_left = make_shared<dielectric>(1.5f);
+		auto material_right = make_shared<metal>(color(0.8f, 0.6f, 0.2f), 1.0f);
 
-		world.add(make_shared<sphere>(point3(0.0f, -100.5f, -1.0f), static_cast <float>(100.0), material_ground));
-		world.add(make_shared<sphere>(point3(0.0f, 0.0f, -1.0f), static_cast <float>(0.5), material_center));
-		world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), static_cast <float>(0.5), material_left));
-		world.add(make_shared<sphere>(point3(1.0f, 0.0f, -1.0f), static_cast <float>(0.5), material_right));
+		world.add(make_shared<sphere>(point3(0.0f, -100.5f, -1.0f), static_cast <float>(100.0f), material_ground));
+		world.add(make_shared<sphere>(point3(0.0f, 0.0f, -1.0f), static_cast <float>(0.5f), material_center));
+		world.add(make_shared<sphere>(point3(-1.0f, 0.0f, -1.0f), static_cast <float>(0.5f), material_left));
+		world.add(make_shared<sphere>(point3(1.0f, 0.0f, -1.0f), static_cast <float>(0.5f), material_right));*/
 
 
 
@@ -199,30 +245,30 @@ namespace Rendering
 		//auto FL = XMLoadFloat4(&_FL);
 		//auto lower_left_corner = origin - horizontal / 2 - vertical / 2 - FL;
 
-		point3 lookfrom(13, 2, 3);
-		point3 lookat(0, 0, 0);
-		vec3 vup(0, 1, 0);
-		//auto dist_to_focus = 10.0;
-		//auto aperture = 0.1;
-		
-		rcCamera cam;
+		//point3 lookfrom(13, 2, 3);
+		//point3 lookat(0, 0, 0);
+		//vec3 vup(0, 1, 0);
+		////auto dist_to_focus = 10.0;
+		////auto aperture = 0.1;
+		//
+		//rcCamera cam;
 
 		if (jCounter == 0)
 		{
-			jCounter = image_height - 1;
+			jCounter = mGame->RenderTargetSize().cy - 1;
 		}
 		int j = jCounter;
 
 
-			for (int i = 0; i < image_width; ++i)
+			for (int i = 0; i < mGame->RenderTargetSize().cx; ++i)
 			{
 			
 				color pixel_color(0, 0, 0);
 				
 				for (int s = 0; s < samples_per_pix; ++s) 
 				{
-					auto u = (i + random_float()) / (image_width - 1);
-					auto v = (j + random_float()) / (image_height - 1);
+					auto u = (i + random_float()) / (mGame->RenderTargetSize().cx - 1);
+					auto v = (j + random_float()) / (mGame->RenderTargetSize().cy - 1);
 					ray r;
 					 r = cam.get_ray(u, v);
 					 
@@ -261,6 +307,56 @@ namespace Rendering
 		return toReturn;
 			
 	}
+
+	hittable_list CpuWriteToTextureDemo::random_scene() {
+		hittable_list world;
+
+		auto ground_material = make_shared<lambertian>(color(0.5f, 0.5f, 0.5f));
+		world.add(make_shared<sphere>(point3(0.0f, -1000.0f, 0.0f), 1000.0f, ground_material));
+
+		for (int a = -11; a < 11; a++) {
+			for (int b = -11; b < 11; b++) {
+				auto choose_mat = random_float();
+				point3 center(a + 0.9f * random_float(), 0.2f, b + 0.9f * random_float());
+
+				if ((center - point3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
+					shared_ptr<material> sphere_material;
+
+					if (choose_mat < 0.8) {
+						// diffuse
+						auto albedo = color::random() * color::random();
+						sphere_material = make_shared<lambertian>(albedo);
+						world.add(make_shared<sphere>(center, 0.2f, sphere_material));
+					}
+					else if (choose_mat < 0.95) {
+						// metal
+						auto albedo = color::random(0.5, 1.0);
+						auto fuzz = random_float(0, 0.5);
+						sphere_material = make_shared<metal>(albedo, fuzz);
+						world.add(make_shared<sphere>(center, 0.2f, sphere_material));
+					}
+					else {
+						// glass
+						sphere_material = make_shared<dielectric>(1.5f);
+						world.add(make_shared<sphere>(center, 0.2f, sphere_material));
+					}
+				}
+			}
+		}
+
+		auto material1 = make_shared<dielectric>(1.5f);
+		world.add(make_shared<sphere>(point3(0.0f, 1.0f, 0.0f), 1.0f, material1));
+
+		auto material2 = make_shared<lambertian>(color(0.4f, 0.2f, 0.1f));
+		world.add(make_shared<sphere>(point3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
+
+		auto material3 = make_shared<metal>(color(0.7f, 0.6f, 0.5f), 0.0f);
+		world.add(make_shared<sphere>(point3(4.0f, 1.0f, 0.0f), 1.0f, material3));
+
+		return world;
+	}
+
+
 
 	//color CpuWriteToTextureDemo::ray_color(const Ray& r)
 	//{

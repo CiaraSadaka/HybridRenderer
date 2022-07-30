@@ -191,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Library.Shared\hittable.h" />
+    <ClInclude Include="aabb.h" />
+    <ClInclude Include="bvh.h" />
     <ClInclude Include="CpuWriteToTextureDemo.h" />
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="material.h" />

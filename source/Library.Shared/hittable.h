@@ -2,6 +2,7 @@
 
 #include "ray.h"
 #include "RayHelper.h"
+#include "aabb.h"
 //#include <DirectXMath.h>
 //#include "VectorHelper.h"
 //#include "material.h"
@@ -34,6 +35,7 @@ namespace Rendering::Hybrid
     class hittable {
     public:
         virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const = 0;
+        virtual bool bounding_box(float time0, float time1, aabb& output_box) const = 0;
     };
 
 
