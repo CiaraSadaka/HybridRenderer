@@ -3,9 +3,12 @@
 #include "PerspectiveCamera.h"
 #include "GameException.h"
 #include "KeyboardComponent.h"
+#include "MouseComponent.h"
+#include "GamePadComponent.h"
 #include "FpsComponent.h"
 #include "CpuWriteToTextureDemo.h"
 #include "RastMode.h"
+#include "Grid.h"
 #include "FirstPersonCamera.h"
 #include "SamplerStates.h"
 #include "RasterizerStates.h"
@@ -39,46 +42,77 @@ namespace Rendering
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());*/
 
-		auto camera = make_shared<FirstPersonCamera>(*this);
+		 
+
+	
+		mMouse = make_shared<MouseComponent>(*this, MouseModes::Absolute);
+		mComponents.push_back(mMouse);
+		mServices.AddService(MouseComponent::TypeIdClass(), mMouse.get());
+
+		mGamePad = make_shared<GamePadComponent>(*this);
+		mComponents.push_back(mGamePad);
+		mServices.AddService(GamePadComponent::TypeIdClass(), mGamePad.get());
+
+
+
+		
+
+		auto camera = make_shared<PerspectiveCamera>(*this);
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());
+
 
 		mImGuiComponent = make_shared<ImGuiComponent>(*this);
 		mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
 		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
 		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
 
+
 		auto helpTextImGuiRenderBlock = make_shared<ImGuiComponent::RenderBlock>([this]()
-		{
-			ImGui::Begin("Controls");
-			ImGui::SetNextWindowPos(ImVec2(10, 10));
-			
 			{
-				stringstream fpsLabel;
-				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-				ImGui::Text(fpsLabel.str().c_str());
-			}
-		
-			ImGui::End();
-		});
+				ImGui::Begin("Controls");
+				ImGui::SetNextWindowPos(ImVec2(10, 10));
+
+				{
+					stringstream fpsLabel;
+					fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+					ImGui::Text(fpsLabel.str().c_str());
+				}
+
+				ImGui::End();
+			});
+
 		mImGuiComponent->AddRenderBlock(helpTextImGuiRenderBlock);
 		mImGuiComponent->Initialize();
+
+		
 
 		mFpsComponent = make_shared<FpsComponent>(*this);
 		mFpsComponent->SetVisible(false);
 		mComponents.push_back(mFpsComponent);
 
-		mCpuWriteToTextureDemo = make_shared<CpuWriteToTextureDemo>(*this, camera);
-		mComponents.push_back(mCpuWriteToTextureDemo);
+		mGrid = make_shared<Grid>(*this, camera);
+		mComponents.push_back(mGrid);
 
 		mRastMode = make_shared<RastMode>(*this, camera);
 		mComponents.push_back(mRastMode);
+
+		mCpuWriteToTextureDemo = make_shared<CpuWriteToTextureDemo>(*this, camera);
+		mComponents.push_back(mCpuWriteToTextureDemo);
+
+	
+
+	/*	mRastMode = make_shared<RastMode>(*this, camera);
+		mComponents.push_back(mRastMode);*/
 
 		Game::Initialize();
 
 
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
-
+		mAmbientLightIntensity = mRastMode->AmbientLightIntensity();
+		mPointLightIntensity = mRastMode->PointLightIntensity();
+		mSpecularIntensity = mRastMode->SpecularIntensity();
+		mSpecularPower = mRastMode->SpecularPower();
 	//	mCpuWriteToTextureDemo = std::make_shared<CpuWriteToTextureDemo>(mGame, camera);
 	}
 
@@ -134,6 +168,7 @@ namespace Rendering
 		mImGuiComponent->Shutdown();
 		mImGuiComponent = nullptr;
 		mCpuWriteToTextureDemo = nullptr;
+		mRastMode = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 		Game::Shutdown();		

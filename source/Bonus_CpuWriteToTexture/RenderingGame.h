@@ -7,8 +7,10 @@
 namespace Library
 {
 	class KeyboardComponent;
-	class ImGuiComponent;
+	class MouseComponent;
+	class GamePadComponent;
 	class FpsComponent;
+	class Grid;
 }
 
 namespace Rendering
@@ -36,9 +38,19 @@ namespace Rendering
 		
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
-		std::shared_ptr<Library::ImGuiComponent> mImGuiComponent;
+		std::shared_ptr<Library::MouseComponent> mMouse;
+		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
+		std::shared_ptr<Library::Grid> mGrid;
+		std::shared_ptr<Library::ImGuiComponent> mImGuiComponent;
+	//	std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<CpuWriteToTextureDemo> mCpuWriteToTextureDemo;
 		std::shared_ptr<RastMode> mRastMode;
+
+		float mAmbientLightIntensity{ 0.0f };
+		float mPointLightIntensity{ 0.0f };
+		float mSpecularIntensity{ 0.0f };
+		float mSpecularPower{ 128.0f };
+
 	};
 }

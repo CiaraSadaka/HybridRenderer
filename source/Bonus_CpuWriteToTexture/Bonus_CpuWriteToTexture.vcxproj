@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="CpuWriteToTextureDemo.cpp" />
     <ClCompile Include="material.cpp" />
+    <ClCompile Include="PointLightMaterial.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
     <ClCompile Include="RastMode.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="perlin.h" />
+    <ClInclude Include="PointLightMaterial.h" />
     <ClInclude Include="RastMode.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="RayHelper.h" />
@@ -216,6 +218,10 @@
     <ProjectReference Include="..\Library.Desktop\Library.Desktop.vcxproj">
       <Project>{8f60ba9c-aab6-47e4-bd36-dcdebf4d9ae6}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\examplePaulCode\pvarcholik-real-time-3d-rendering-with-directx-and-hlsl-6084e18b2b37\source\4.1_Point_Light\Content\Textures\EarthComposite.dds" />
+    <Image Include="..\..\..\..\examplePaulCode\pvarcholik-real-time-3d-rendering-with-directx-and-hlsl-6084e18b2b37\source\4.1_Point_Light\Content\Textures\EarthSpecularMap.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

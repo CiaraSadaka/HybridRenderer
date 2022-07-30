@@ -11,6 +11,7 @@
     <ClCompile Include="rcCamera.cpp">
       <Filter>Ray</Filter>
     </ClCompile>
+    <ClCompile Include="PointLightMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingGame.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="aarect.h">
       <Filter>Ray</Filter>
     </ClInclude>
+    <ClInclude Include="PointLightMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -69,5 +71,16 @@
     <Filter Include="Ray">
       <UniqueIdentifier>{b044f345-1907-4888-a8aa-d8491a560465}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{f238e7b1-7bb6-42b6-8238-01e92dc134bd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\examplePaulCode\pvarcholik-real-time-3d-rendering-with-directx-and-hlsl-6084e18b2b37\source\4.1_Point_Light\Content\Textures\EarthComposite.dds">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\..\..\..\examplePaulCode\pvarcholik-real-time-3d-rendering-with-directx-and-hlsl-6084e18b2b37\source\4.1_Point_Light\Content\Textures\EarthSpecularMap.png">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
