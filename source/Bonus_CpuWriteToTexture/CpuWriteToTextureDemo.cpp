@@ -149,9 +149,9 @@ namespace Rendering
 		// Image
 		//const float aspect_ratio = (float)(16.0 / 12.0);
 		const int image_width = mGame->RenderTargetSize().cx;
-		//const int image_height = mGame->RenderTargetSize().cy;
+		const int image_height = mGame->RenderTargetSize().cy;
 
-		const float aspect_ratio = (float)(16.0 / 9.0);
+		const float aspect_ratio = (float)(image_width/image_height);
 
 
 		
@@ -179,6 +179,7 @@ namespace Rendering
 			lookat = point3(0.0f, 0.0f, 0.0f);
 			vfov = 20.0f;
 			break;
+		default:
 		case 3:
 			world = two_perlin_spheres();
 			background = color(0.70f, 0.80f, 1.00f);
@@ -194,7 +195,7 @@ namespace Rendering
 			vfov = 20.0f;
 			break;
 
-		default:
+	//	default:
 		case 5:
 			world = simple_light();
 			background = color(0.0f, 0.0f, 0.0f);

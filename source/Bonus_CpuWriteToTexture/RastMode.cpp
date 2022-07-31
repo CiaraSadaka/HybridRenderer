@@ -167,33 +167,19 @@ namespace Rendering
 	void RastMode::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
+		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
 
-		vector<VertexPositionColor> vertices;
+		vector<VertexPositionTexture> vertices;
 		vertices.reserve(sourceVertices.size());
-		if (mesh.VertexColors().size() > 0)
+		for (size_t i = 0; i < sourceVertices.size(); i++)
 		{
-			const vector<XMFLOAT4>& vertexColors = mesh.VertexColors().at(0);
-			assert(vertexColors.size() == sourceVertices.size());
-
-			for (size_t i = 0; i < sourceVertices.size(); i++)
-			{
-				const XMFLOAT3& position = sourceVertices.at(i);
-				const XMFLOAT4& color = vertexColors.at(i);
-				vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
-			}
-		}
-		else
-		{
-			for (size_t i = 0; i < sourceVertices.size(); i++)
-			{
-				const XMFLOAT3& position = sourceVertices.at(i);
-				XMFLOAT4 color = ColorHelper::RandomColor();
-				vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
-			}
+			const XMFLOAT3& position = sourceVertices.at(i);
+			const XMFLOAT3& uv = sourceUVs.at(i);
+			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y));
 		}
 
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = VertexPositionColor::VertexBufferByteWidth(vertices.size());
+		vertexBufferDesc.ByteWidth = VertexPositionTexture::VertexBufferByteWidth(vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 

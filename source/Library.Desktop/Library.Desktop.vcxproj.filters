@@ -66,13 +66,13 @@
       <Filter>Content\Fonts</Filter>
     </None>
     <None Include="packages.config" />
-    <None Include="Content\Models\Sphere.obj.bin">
-      <Filter>Content\Models</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Content\Models\Sphere.obj.bin">
+    <Image Include="Content\Textures\EarthComposite.dds">
       <Filter>Content\Textures</Filter>
+    </Image>
+    <Image Include="Content\Models\Sphere.obj.bin">
+      <Filter>Content\Models</Filter>
     </Image>
   </ItemGroup>
 </Project>
