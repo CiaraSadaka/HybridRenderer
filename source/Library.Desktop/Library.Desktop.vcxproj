@@ -56,6 +56,8 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Content\Shaders\PointLightDemoPS.hlsl" />
+    <FxCompile Include="Content\Shaders\PointLightDemoVS.hlsl" />
     <FxCompile Include="Content\Shaders\SkyboxPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -105,11 +107,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_14_Regular.spritefont" />
+    <None Include="Content\Models\PointLightProxy.obj.bin" />
     <None Include="Content\Models\Sphere.obj.bin" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Content\Models\Sphere.obj.bin" />
+    <Image Include="Content\Textures\EarthComposite.dds" />
+    <Image Include="Content\Textures\EarthSpecularMap.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8F60BA9C-AAB6-47E4-BD36-DCDEBF4D9AE6}</ProjectGuid>

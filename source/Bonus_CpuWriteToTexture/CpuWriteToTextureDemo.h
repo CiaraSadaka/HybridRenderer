@@ -82,8 +82,8 @@ namespace Rendering
 
 
 		int jCounter{0};
-		int samples_per_pix{ 100};
-		const int max_depth{ 50 };
+		int samples_per_pix{ 5};
+		const int max_depth{ 10 };
 
 		std::unique_ptr < uint8_t[] > ImageBuffer;
 		inline static const std::chrono::seconds _textureUpdateDelay { 0};
