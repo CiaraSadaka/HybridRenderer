@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
-    <ClCompile Include="CpuWriteToTextureDemo.cpp" />
     <ClCompile Include="RastMode.cpp" />
     <ClCompile Include="material.cpp">
       <Filter>Ray</Filter>
@@ -11,6 +10,8 @@
     <ClCompile Include="rcCamera.cpp">
       <Filter>Ray</Filter>
     </ClCompile>
+    <ClCompile Include="PointLightMaterial.cpp" />
+    <ClCompile Include="CpuWriteToTextureDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingGame.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="aarect.h">
       <Filter>Ray</Filter>
     </ClInclude>
+    <ClInclude Include="PointLightMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -17,7 +17,10 @@
       <UniqueIdentifier>{51588a5f-d4de-4eb8-b5c0-03896918dad5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Content\Models">
-      <UniqueIdentifier>{601c3bd1-08c3-4ed8-8ee6-25f188d29191}</UniqueIdentifier>
+      <UniqueIdentifier>{ef5ee4ee-0370-4843-811e-429a726eb91b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Textures">
+      <UniqueIdentifier>{ec91f5b3-b139-49fc-b7db-bd3437957cf9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -62,9 +65,14 @@
     <None Include="Content\Fonts\Arial_14_Regular.spritefont">
       <Filter>Content\Fonts</Filter>
     </None>
+    <None Include="packages.config" />
     <None Include="Content\Models\Sphere.obj.bin">
       <Filter>Content\Models</Filter>
     </None>
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Content\Models\Sphere.obj.bin">
+      <Filter>Content\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

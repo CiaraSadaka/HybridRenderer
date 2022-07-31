@@ -78,6 +78,9 @@ namespace Rendering
 		mCpuWriteToTextureDemo = make_shared<CpuWriteToTextureDemo>(*this, camera);
 		mComponents.push_back(mCpuWriteToTextureDemo);
 
+		mCpuWriteToTextureDemo->SetEnabled(0);
+		mCpuWriteToTextureDemo->SetVisible(0);
+
 		mRastMode = make_shared<RastMode>(*this, camera);
 		mComponents.push_back(mRastMode);
 

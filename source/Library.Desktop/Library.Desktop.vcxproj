@@ -108,6 +108,9 @@
     <None Include="Content\Models\Sphere.obj.bin" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Content\Models\Sphere.obj.bin" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8F60BA9C-AAB6-47E4-BD36-DCDEBF4D9AE6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="CpuWriteToTextureDemo.cpp" />
     <ClCompile Include="material.cpp" />
+    <ClCompile Include="PointLightMaterial.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
     <ClCompile Include="RastMode.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="perlin.h" />
+    <ClInclude Include="PointLightMaterial.h" />
     <ClInclude Include="RastMode.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="RayHelper.h" />

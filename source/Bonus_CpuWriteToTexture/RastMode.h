@@ -29,7 +29,8 @@ namespace Rendering
 	private:
 		struct CBufferPerObject
 		{
-			DirectX::XMFLOAT4X4 WorldViewProjection;
+		//	DirectX::XMFLOAT4X4 WorldViewProjection;
+			DirectX::XMFLOAT4X4 WorldViewProjection{ Library::MatrixHelper::Identity };
 		};
 
 		void CreateVertexBuffer(const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
@@ -46,9 +47,10 @@ namespace Rendering
 		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mConstantBuffer;
+		winrt::com_ptr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		float mRotationAngle{ 0.0f };
-		bool mAnimationEnabled{ true };
+		bool mAnimationEnabled{ false };
 		bool mUpdateConstantBuffer{ true };
 	};
 }
