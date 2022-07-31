@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "PointLightMaterial.h"
-#include "pch.h"
-#include "PointLightMaterial.h"
 #include "Game.h"
 #include "GameException.h"
 #include "VertexDeclarations.h"
@@ -140,10 +138,10 @@ namespace Rendering
 		Material::Initialize();
 
 		auto& content = mGame->Content();
-		auto vertexShader = content.Load<VertexShader>(L"Content\\Shaders\\PointLightDemoVS.cso"s);
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\PointLightDemoVS.cso"s);
 		SetShader(vertexShader);
 
-		auto pixelShader = content.Load<PixelShader>(L"Content\\Shaders\\PointLightDemoPS.cso");
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\PointLightDemoPS.cso");
 		SetShader(pixelShader);
 
 		auto direct3DDevice = mGame->Direct3DDevice();

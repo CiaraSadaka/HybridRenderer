@@ -8,10 +8,7 @@
 #include "GameException.h"
 #include "Model.h"
 #include "Mesh.h"
-#include "ProxyModel.h"
-#include "PointLightMaterial.h"
-#include "Texture2D.h"
-#include "FirstPersonCamera.h"
+#include "SamplerStates.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -26,10 +23,6 @@ namespace Rendering
 	{
 	}
 
-	RastMode::~RastMode()
-	{
-	}
-
 	bool RastMode::AnimationEnabled() const
 	{
 		return mAnimationEnabled;
@@ -40,143 +33,158 @@ namespace Rendering
 		mAnimationEnabled = enabled;
 	}
 
-	void RastMode::ToggleAnimation()
-	{
-		mAnimationEnabled = !mAnimationEnabled;
-	}
-
-	float RastMode::AmbientLightIntensity() const
-	{
-		return mMaterial->AmbientColor().x;
-	}
-
-	void RastMode::SetAmbientLightIntensity(float intensity)
-	{
-		mMaterial->SetAmbientColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
-	}
-
-	float RastMode::PointLightIntensity() const
-	{
-		return mMaterial->LightColor().x;
-	}
-
-	void RastMode::SetPointLightIntensity(float intensity)
-	{
-		mMaterial->SetLightColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
-	}
-
-	const XMFLOAT3& RastMode::LightPosition() const
-	{
-		return mPointLight.Position();
-	}
-
-	const XMVECTOR RastMode::LightPositionVector() const
-	{
-		return mPointLight.PositionVector();
-	}
-
-	void RastMode::SetLightPosition(const XMFLOAT3& position)
-	{
-		mPointLight.SetPosition(position);
-		mProxyModel->SetPosition(position);
-		mMaterial->SetLightPosition(position);
-	}
-
-	void RastMode::SetLightPosition(FXMVECTOR position)
-	{
-		mPointLight.SetPosition(position);
-		mProxyModel->SetPosition(position);
-
-		XMFLOAT3 materialPosition;
-		XMStoreFloat3(&materialPosition, position);
-		mMaterial->SetLightPosition(materialPosition);
-	}
-
-	float RastMode::LightRadius() const
-	{
-		return mMaterial->LightRadius();
-	}
-
-	void RastMode::SetLightRadius(float radius)
-	{
-		mMaterial->SetLightRadius(radius);
-	}
-
-	float RastMode::SpecularIntensity() const
-	{
-		return mMaterial->SpecularColor().x;
-	}
-
-	void RastMode::SetSpecularIntensity(float intensity)
-	{
-		mMaterial->SetSpecularColor(XMFLOAT3(intensity, intensity, intensity));
-	}
-
-	float RastMode::SpecularPower() const
-	{
-		return mMaterial->SpecularPower();
-	}
-
-	void RastMode::SetSpecularPower(float power)
-	{
-		mMaterial->SetSpecularPower(power);
-	}
-
 	void RastMode::Initialize()
 	{
-		auto direct3DDevice = mGame->Direct3DDevice();
-		const auto model = mGame->Content().Load<Model>(L"..\\Library.Desktop\\Content\\Models\\Sphere.obj.bin"s);
-		Mesh* mesh = model->Meshes().at(0).get();
-		VertexPositionTextureNormal::CreateVertexBuffer(direct3DDevice, *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
-		mesh->CreateIndexBuffer(*direct3DDevice, not_null<ID3D11Buffer**>(mIndexBuffer.put()));
-		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
+		// Load a compiled vertex shader
+		vector<char> compiledVertexShader;
+		Utility::LoadBinaryFile(L"Content\\Shaders\\TexturedModelVS.cso", compiledVertexShader);
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.put()), "ID3D11Device::CreatedVertexShader() failed.");
 
-		auto colorMap = mGame->Content().Load<Texture2D>(L"Library.Desktop\\Content\\Textures\\EarthComposite.dds"s);
-		auto specularMap = mGame->Content().Load<Texture2D>(L"Library.Desktop\\Content\\Textures\\EarthSpecularMap.png"s);
-		mMaterial = make_shared<PointLightMaterial>(*mGame, colorMap, specularMap);
-		mMaterial->Initialize();
+		// Load a compiled pixel shader
+		vector<char> compiledPixelShader;
+		Utility::LoadBinaryFile(L"Content\\Shaders\\TexturedModelPS.cso", compiledPixelShader);
+		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
 
-		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Content\\Models\\PointLightProxy.obj.bin"s, 0.5f);
-		mProxyModel->Initialize();
-
-		SetLightPosition(XMFLOAT3(1.0f, 0.0, 8.0f));
-
-		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
-		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
-		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
-
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
+		// Create an input layout
+		const D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
 		{
-			firstPersonCamera->AddPositionUpdatedCallback([this]() {
-				mMaterial->UpdateCameraPosition(mCamera->Position());
-				});
-		}
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, narrow_cast<uint32_t>(size(inputElementDescriptions)), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.put()), "ID3D11Device::CreateInputLayout() failed.");
+
+		// Load the model
+		Library::Model model("Content\\Models\\Sphere.obj.bin");
+
+		// Create vertex and index buffers for the model
+		Mesh* mesh = model.Meshes().at(0).get();
+		CreateVertexBuffer(*mesh, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
+		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.put()));
+		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
+
+		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
+		constantBufferDesc.ByteWidth = sizeof(CBufferPerObject);
+		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.put()), "ID3D11Device::CreateBuffer() failed.");
+
+		//********************************************************************************************************
+		// is there something wrong in texture or material, pr is it not a direct x divice
+		// Load a texture
+		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
+		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.put()), "CreateDDSTextureFromFile() failed.");
+
+		auto updateConstantBufferFunc = [this]() { mUpdateConstantBuffer = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateConstantBufferFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateConstantBufferFunc);
 	}
 
 	void RastMode::Update(const GameTime& gameTime)
 	{
 		if (mAnimationEnabled)
 		{
-			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));
-			mUpdateMaterial = true;
+			mRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mRotationAngle));
+			mUpdateConstantBuffer = true;
 		}
-
-		mProxyModel->Update(gameTime);
 	}
 
-	void RastMode::Draw(const GameTime& gameTime)
+	void RastMode::Draw(const GameTime&)
 	{
-		if (mUpdateMaterial)
+		assert(mCamera != nullptr);
+
+		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		direct3DDeviceContext->IASetInputLayout(mInputLayout.get());
+
+		constexpr uint32_t stride = VertexPositionTexture::VertexSize();
+		const uint32_t offset = 0;
+		const auto vertexBuffers = mVertexBuffer.get();
+		direct3DDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffers, &stride, &offset);
+		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.get(), DXGI_FORMAT_R32_UINT, 0);
+
+		direct3DDeviceContext->VSSetShader(mVertexShader.get(), nullptr, 0);
+		direct3DDeviceContext->PSSetShader(mPixelShader.get(), nullptr, 0);
+
+		if (mUpdateConstantBuffer)
 		{
 			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-			mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
-			mUpdateMaterial = false;
+			XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
+			wvp = XMMatrixTranspose(wvp);
+			XMStoreFloat4x4(&mCBufferPerObject.WorldViewProjection, wvp);
+			direct3DDeviceContext->UpdateSubresource(mConstantBuffer.get(), 0, nullptr, &mCBufferPerObject, 0, 0);
+			mUpdateConstantBuffer = false;
+		}
+		const auto vsConstantBuffers = mConstantBuffer.get();
+		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
+
+		const auto psShaderResources = mColorTexture.get();
+		direct3DDeviceContext->PSSetShaderResources(0, 1, &psShaderResources);
+
+		const auto psSamplers = SamplerStates::TrilinearWrap.get();
+		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
+
+		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
+	}
+
+	//void RastMode::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	//{
+	//	const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
+
+	//	vector<VertexPositionColor> vertices;
+	//	vertices.reserve(sourceVertices.size());
+	//	if (mesh.VertexColors().size() > 0)
+	//	{
+	//		const vector<XMFLOAT4>& vertexColors = mesh.VertexColors().at(0);
+	//		assert(vertexColors.size() == sourceVertices.size());
+
+	//		for (size_t i = 0; i < sourceVertices.size(); i++)
+	//		{
+	//			const XMFLOAT3& position = sourceVertices.at(i);
+	//			const XMFLOAT4& color = vertexColors.at(i);
+	//			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		for (size_t i = 0; i < sourceVertices.size(); i++)
+	//		{
+	//			const XMFLOAT3& position = sourceVertices.at(i);
+	//			XMFLOAT4 color = ColorHelper::RandomColor();
+	//			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
+	//		}
+	//	}
+
+	//	D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
+	//	vertexBufferDesc.ByteWidth = VertexPositionColor::VertexBufferByteWidth(vertices.size());
+	//	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	//	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	//	D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
+	//	vertexSubResourceData.pSysMem = &vertices[0];
+	//	ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+	//}
+	void RastMode::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	{
+		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
+		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
+
+		vector<VertexPositionTexture> vertices;
+		vertices.reserve(sourceVertices.size());
+		for (size_t i = 0; i < sourceVertices.size(); i++)
+		{
+			const XMFLOAT3& position = sourceVertices.at(i);
+			const XMFLOAT3& uv = sourceUVs.at(i);
+			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y));
 		}
 
-		mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);
-		mProxyModel->Draw(gameTime);
+		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
+		vertexBufferDesc.ByteWidth = VertexPositionTexture::VertexBufferByteWidth(vertices.size());
+		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
+		vertexSubResourceData.pSysMem = &vertices[0];
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }
