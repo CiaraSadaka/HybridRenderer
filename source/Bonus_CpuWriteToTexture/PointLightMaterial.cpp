@@ -138,10 +138,10 @@ namespace Rendering
 		Material::Initialize();
 
 		auto& content = mGame->Content();
-		auto vertexShader = content.Load<VertexShader>(L"Shaders\\TexturedModelVS.cso"s);
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\PointLightDemoVS.cso"s);
 		SetShader(vertexShader);
 
-		auto pixelShader = content.Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\PointLightDemoPS.cso");
 		SetShader(pixelShader);
 
 		auto direct3DDevice = mGame->Direct3DDevice();
