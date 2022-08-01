@@ -71,5 +71,13 @@
     <Filter Include="Ray">
       <UniqueIdentifier>{b044f345-1907-4888-a8aa-d8491a560465}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{e5cdf317-6fea-4501-aa5e-c21c08bd5623}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="earthmap1k.jpg">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

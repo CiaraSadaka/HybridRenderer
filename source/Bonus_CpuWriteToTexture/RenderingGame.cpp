@@ -50,51 +50,87 @@ namespace Rendering
 		mComponents.push_back(mGrid);
 
 
-		mImGuiComponent = make_shared<ImGuiComponent>(*this);
-		mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
-		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
-		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
+		//mImGuiComponent = make_shared<ImGuiComponent>(*this);
+		//mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
+		//auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
+		//UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
 
-		auto helpTextImGuiRenderBlock = make_shared<ImGuiComponent::RenderBlock>([this]()
-		{
-			ImGui::Begin("Controls");
-			ImGui::SetNextWindowPos(ImVec2(10, 10));
-			
-			{
-				stringstream fpsLabel;
-				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-				ImGui::Text(fpsLabel.str().c_str());
-			}
-		
-			ImGui::End();
-		});
-		mImGuiComponent->AddRenderBlock(helpTextImGuiRenderBlock);
-		mImGuiComponent->Initialize();
+		//auto helpTextImGuiRenderBlock = make_shared<ImGuiComponent::RenderBlock>([this]()
+		//{
+		//	ImGui::Begin("Controls");
+		//	ImGui::SetNextWindowPos(ImVec2(10, 10));
+		//	
+		//	{
+		//		stringstream fpsLabel;
+		//		fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+		//		ImGui::Text(fpsLabel.str().c_str());
+		//	}
+		//
+		//	ImGui::End();
+		//});
+		//mImGuiComponent->AddRenderBlock(helpTextImGuiRenderBlock);
+		//mImGuiComponent->Initialize();
 
-		mFpsComponent = make_shared<FpsComponent>(*this);
-		mFpsComponent->SetVisible(false);
-		mComponents.push_back(mFpsComponent);
-
+	
 		mCpuWriteToTextureDemo = make_shared<CpuWriteToTextureDemo>(*this, camera);
 		mComponents.push_back(mCpuWriteToTextureDemo);
 
 		mCpuWriteToTextureDemo->SetEnabled(0);
 		mCpuWriteToTextureDemo->SetVisible(0);
 
-		mRastMode = make_shared<RastMode>(*this, camera);
-		mComponents.push_back(mRastMode);
+	/*	mRastMode = make_shared<RastMode>(*this, camera, 0.0f, 0.0f, 0.0f);
+		mComponents.push_back(mRastMode);*/
+		mEarth = make_shared<RastMode>(*this, camera, 0.0f, L"Textures\\EarthComposite.dds"s, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, nullptr);
+		mComponents.push_back(mEarth);
 
-		
+		mEarth2 = make_shared<RastMode>(*this, camera, 5.0f, L"Textures\\EarthComposite.dds"s, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, nullptr);
+		mComponents.push_back(mEarth2);
+
+		auto imGui = make_shared<ImGuiComponent>(*this);
+		mComponents.push_back(imGui);
+		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
+		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
+		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
+
+		auto helpTextImGuiRenderBlock = make_shared<ImGuiComponent::RenderBlock>([this]()
+			{
+				ImGui::Begin("Controls");
+				ImGui::SetNextWindowPos(ImVec2(10, 10));
+
+				{
+					stringstream fpsLabel;
+					fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+					ImGui::Text(fpsLabel.str().c_str());
+				}
+
+				ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
+				ImGui::Text("Move Point Light (Num-Pad 8/2, 4/6, 3/9)");
+
+				{
+					stringstream gridVisibleLabel;
+					gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+					ImGui::Text(gridVisibleLabel.str().c_str());
+				}
+
+
+				ImGui::End();
+			});
+		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
+
+		mFpsComponent = make_shared<FpsComponent>(*this);
+		mFpsComponent->SetVisible(false);
+		mComponents.push_back(mFpsComponent);
+
 
 		Game::Initialize();
 
 
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
 
-		mAmbientLightIntensity = mRastMode->AmbientLightIntensity();
-		mPointLightIntensity = mRastMode->PointLightIntensity();
+	//	mAmbientLightIntensity = mRastMode->AmbientLightIntensity();
+	/*	mPointLightIntensity = mRastMode->PointLightIntensity();
 		mSpecularIntensity = mRastMode->SpecularIntensity();
-		mSpecularPower = mRastMode->SpecularPower();
+		mSpecularPower = mRastMode->SpecularPower();*/
 	//	mCpuWriteToTextureDemo = std::make_shared<CpuWriteToTextureDemo>(mGame, camera);
 	}
 
@@ -110,15 +146,16 @@ namespace Rendering
 			mCpuWriteToTextureDemo->SetEnabled(!mCpuWriteToTextureDemo->Enabled());
 			mCpuWriteToTextureDemo->SetVisible(mCpuWriteToTextureDemo->Enabled());
 
-			mRastMode->SetEnabled(!mRastMode->Enabled());
-			mRastMode->SetVisible(mRastMode->Enabled());
+			mEarth->SetEnabled(!mEarth->Enabled());
+			mEarth->SetVisible(mEarth->Enabled());
+			mEarth2->SetEnabled(!mEarth->Enabled());
+			mEarth2->SetVisible(mEarth->Enabled());
 		
 		}
-		mImGuiComponent->Update(gameTime);
+	//	mImGuiComponent->Update(gameTime);
 
-		//UpdateAmbientLightIntensity(gameTime);
-		//UpdatePointLight(gameTime);
-		//UpdateSpecularLight(gameTime);
+		UpdateAmbientLightIntensity(gameTime);
+
 
 		Game::Update(gameTime);
 
@@ -133,7 +170,7 @@ namespace Rendering
 
 		Game::Draw(gameTime);
 
-		mImGuiComponent->Draw(gameTime);
+	//	mImGuiComponent->Draw(gameTime);
 
 		HRESULT hr = mSwapChain->Present(1, 0);
 
@@ -151,8 +188,8 @@ namespace Rendering
 	void RenderingGame::Shutdown()
 	{
 		mFpsComponent = nullptr;
-		mImGuiComponent->Shutdown();
-		mImGuiComponent = nullptr;
+	//	mImGuiComponent->Shutdown();
+	//	mImGuiComponent = nullptr;
 		mCpuWriteToTextureDemo = nullptr;
 		mRastMode = nullptr;
 		RasterizerStates::Shutdown();
@@ -160,7 +197,22 @@ namespace Rendering
 		Game::Shutdown();		
 	}
 
-	
+
+	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
+	{
+		if (mKeyboard->IsKeyDown(Keys::PageUp) && mAmbientLightIntensity < 1.0f)
+		{
+			mAmbientLightIntensity += gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientLightIntensity = min(mAmbientLightIntensity, 1.0f);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientLightIntensity > 0.0f)
+		{
+			mAmbientLightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientLightIntensity = max(mAmbientLightIntensity, 0.0f);
+		}
+	}
+
+
 
 	void RenderingGame::Exit()
 	{

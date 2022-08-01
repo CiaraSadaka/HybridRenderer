@@ -34,7 +34,10 @@ namespace Rendering
 	private:
 		inline static const DirectX::XMVECTORF32 BackgroundColor{ DirectX::Colors::CornflowerBlue };
 
-		
+		void UpdateAmbientLightIntensity(const Library::GameTime& gameTime);
+
+		std::shared_ptr<RastMode> mEarth;
+		std::shared_ptr<RastMode> mEarth2;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::ImGuiComponent> mImGuiComponent;

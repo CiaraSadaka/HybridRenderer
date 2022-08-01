@@ -18,10 +18,14 @@ using namespace DirectX;
 
 namespace Rendering
 {
-	RastMode::RastMode(Game& game, const shared_ptr<Camera>& camera) :
-		DrawableGameComponent(game, camera)
+	RastMode::RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, float orbitalDist, std::wstring texName, float scale, float ambientLight, float axialTilt, float rotationalPeriod, float orbitalPeriod, std::shared_ptr<RastMode> parent) :
+		DrawableGameComponent(game, camera), mTexName(texName), mScale(scale), mAxialTilt(axialTilt), mRotationalPeriod(rotationalPeriod), mOrbitalPeriod(orbitalPeriod), mParent(parent)
 	{
+		mScale = scale;
+		mAmbientLight = ambientLight;
+		mOrbitalDistance = orbitalDist;
 	}
+
 
 	RastMode::~RastMode()
 	{
@@ -122,25 +126,25 @@ namespace Rendering
 	void RastMode::Initialize()
 	{
 		auto direct3DDevice = mGame->Direct3DDevice();
-		const auto model = mGame->Content().Load<Library::Model>(L"Models\\Sphere.obj.bin"s);
-		// Load the model
-		//Library::Model model("Content\\Models\\Sphere.obj.bin");
-
-		// Create vertex and index buffers for the model
+		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin"s);
 		Mesh* mesh = model->Meshes().at(0).get();
 		VertexPositionTextureNormal::CreateVertexBuffer(direct3DDevice, *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
 		mesh->CreateIndexBuffer(*direct3DDevice, not_null<ID3D11Buffer**>(mIndexBuffer.put()));
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
-		auto colorMap = mGame->Content().Load<Texture2D>(L"Textures\\EarthComposite.dds"s);
-		auto specularMap = mGame->Content().Load<Texture2D>(L"Textures\\EarthSpecularMap.png"s);
+		auto colorMap = mGame->Content().Load<Texture2D>(mTexName);
+		auto specularMap = mGame->Content().Load<Texture2D>(mTexName);
 		mMaterial = make_shared<PointLightMaterial>(*mGame, colorMap, specularMap);
 		mMaterial->Initialize();
 
 		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\PointLightProxy.obj.bin"s, 0.5f);
 		mProxyModel->Initialize();
 
-		SetLightPosition(XMFLOAT3(1.0f, 0.0, 8.0f));
+		SetLightPosition(XMFLOAT3(0.0f, 0.0, 8.0f));
+
+		mMaterial->SetAmbientColor(DirectX::XMFLOAT4(mAmbientLight, mAmbientLight, mAmbientLight, mAmbientLight));
+		mMaterial->SetLightRadius(10000.0f);
+		mMaterial->SetSpecularColor(XMFLOAT3(0.f, 0.f, 0.f));
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
 		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
@@ -153,15 +157,28 @@ namespace Rendering
 				mMaterial->UpdateCameraPosition(mCamera->Position());
 				});
 		}
+
+		XMStoreFloat4x4(&mScaleMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixScaling(mScale, mScale, mScale)));
 	}
 
 	void RastMode::Update(const GameTime& gameTime)
 	{
 		if (mAnimationEnabled)
 		{
-			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));
+			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * sRotationRate / mRotationalPeriod;
+			mModelOrbitalAngle += gameTime.ElapsedGameTimeSeconds().count() * sOrbitalRate / mOrbitalPeriod;
+	//		XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mScaleMatrix), XMMatrixRotationY(mModelRotationAngle)));
+			//XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixRotationX(radiansToDegrees(mAxialTilt))));
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixTranslation(mOrbitalDistance, 0, 0)));
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixRotationY(mModelOrbitalAngle)));
+
+
 			mUpdateMaterial = true;
+		}
+		if (mParent)
+		{
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixTranslation(mParent->mOrbitalDistance * 100.0f, 0, 0)));
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixRotationY(mParent->mModelOrbitalAngle)));
 		}
 
 		mProxyModel->Update(gameTime);
@@ -169,6 +186,7 @@ namespace Rendering
 
 	void RastMode::Draw(const GameTime& gameTime)
 	{
+
 		if (mUpdateMaterial)
 		{
 			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);

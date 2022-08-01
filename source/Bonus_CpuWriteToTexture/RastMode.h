@@ -19,7 +19,7 @@ namespace Rendering
 	class RastMode final : public Library::DrawableGameComponent
 	{
 	public:
-		RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
+		RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, float orbitalDist, std::wstring texName, float scale, float ambientLight, float axialTilt, float rotationalPeriod, float orbitalPeriod, std::shared_ptr<RastMode> parent);
 		RastMode(const RastMode&) = delete;
 		RastMode(RastMode&&) = default;
 		RastMode& operator=(const RastMode&) = default;
@@ -64,8 +64,26 @@ namespace Rendering
 		std::uint32_t mIndexCount{ 0 };
 		Library::PointLight mPointLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
+		float _x{0.0f};
+		float _y{ 0.0f };
+		float _z{ 0.0f };
 		float mModelRotationAngle{ 0.0f };
 		bool mAnimationEnabled{ true };
 		bool mUpdateMaterial{ true };
+
+		float mOrbitalDistance{ 0.0f };
+		std::wstring mTexName;
+		float mScale{ 0.0f };
+		float mAmbientLight{ 0.0f };
+		float mAxialTilt{ 0.0f };
+		float mRotationalPeriod{ 0.0f };
+		float mOrbitalPeriod{ 0.0f };
+		std::shared_ptr<RastMode> mParent;
+		const inline static float sOrbitalRate = 0.2175f;
+		const inline static float sRotationRate = sOrbitalRate * 6.374f;
+
+		DirectX::XMFLOAT4X4 mScaleMatrix{ Library::MatrixHelper::Identity };
+
+		float mModelOrbitalAngle{ 0.0f };
 	};
 }
