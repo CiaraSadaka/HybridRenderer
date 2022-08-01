@@ -111,7 +111,7 @@ namespace Rendering::Hybrid
             float cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0f);
             float sin_theta = sqrt(1.0f - cos_theta * cos_theta);
 
-            bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+            bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
             vec3 direction;
 
             if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_float())
@@ -134,6 +134,5 @@ namespace Rendering::Hybrid
             return r0 + (1.0f - r0) * pow((1.0f - cosine), 5.0f);
         }
     };
-
-
+   
 }

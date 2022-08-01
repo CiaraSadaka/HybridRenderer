@@ -57,6 +57,9 @@
       <Filter>Ray</Filter>
     </ClInclude>
     <ClInclude Include="PointLightMaterial.h" />
+    <ClInclude Include="rtw_stb_image.h" />
+    <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="stb_image_read.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

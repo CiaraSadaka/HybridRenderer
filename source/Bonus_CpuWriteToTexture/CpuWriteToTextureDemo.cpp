@@ -181,7 +181,7 @@ namespace Rendering
 			vfov = 20.0f;
 			aperture = 0.1f;
 			break;
-		default:
+	//	default:
 		case 2:
 			world = two_spheres();
 			background = color(0.70f, 0.80f, 1.00f);
@@ -197,8 +197,9 @@ namespace Rendering
 			lookat = point3(0.0f, 0.0f, 0.0f);
 			vfov = 20.0f;
 			break;
+		default:
 		case 4:
-			//world = earth();
+			world = earth();
 			background = color(0.70f, 0.80f, 1.00f);
 			lookfrom = point3(13.0f, 2.0f, 3.0f);
 			lookat = point3(0.0f, 0.0f, 0.0f);
@@ -332,6 +333,14 @@ namespace Rendering
 			return emitted;
 
 		return emitted + attenuation * ray_color(scattered, background, world, depth - 1);
+	}
+
+	hittable_list earth() {
+		auto earth_texture = make_shared<RTimage_texture>("Textures\\earthmap1k.jpg");
+		auto earth_surface = make_shared<lambertian>(earth_texture);
+		auto globe = make_shared<sphere>(point3(0.0f, 0.0f, 0.0f), 2.0f, earth_surface);
+
+		return hittable_list(globe);
 	}
 
 	hittable_list CpuWriteToTextureDemo::two_perlin_spheres() {
