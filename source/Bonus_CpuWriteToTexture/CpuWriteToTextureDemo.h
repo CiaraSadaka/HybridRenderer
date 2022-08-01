@@ -31,6 +31,9 @@
 #include "material.h"
 #include "rcCamera.h"
 #include "aarect.h"
+#include "box.h"
+#include "constant_medium.h"
+//#include "bvh.h"
 //#include "vec3.h"
 
 
@@ -71,6 +74,9 @@ namespace Rendering
 		hittable_list two_spheres();
 		hittable_list two_perlin_spheres();
 		hittable_list simple_light();
+		hittable_list cornell_box();
+		hittable_list cornell_smoke();
+		hittable_list final_scene();
 		/*XMFLOAT4 unit_vector(XMFLOAT4 v);
 		float dot(const XMFLOAT4& u, const XMFLOAT4& v);
 

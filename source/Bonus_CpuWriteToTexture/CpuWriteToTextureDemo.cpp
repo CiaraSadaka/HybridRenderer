@@ -157,10 +157,10 @@ namespace Rendering
 
 		// Image
 		//const float aspect_ratio = (float)(16.0 / 12.0);
-		const int image_width = mGame->RenderTargetSize().cx;
-		const int image_height = mGame->RenderTargetSize().cy;
+		 int image_width = mGame->RenderTargetSize().cx;
+		 int image_height = mGame->RenderTargetSize().cy;
 
-		const float aspect_ratio = (float)(image_width/image_height);
+		 float aspect_ratio = (float)(image_width/image_height);
 
 
 		
@@ -181,7 +181,7 @@ namespace Rendering
 			vfov = 20.0f;
 			aperture = 0.1f;
 			break;
-		default:
+			//default:
 		case 2:
 			world = two_spheres();
 			background = color(0.70f, 0.80f, 1.00f);
@@ -189,7 +189,7 @@ namespace Rendering
 			lookat = point3(0.0f, 0.0f, 0.0f);
 			vfov = 20.0f;
 			break;
-		//default:
+			//default:
 		case 3:
 			world = two_perlin_spheres();
 			background = color(0.70f, 0.80f, 1.00f);
@@ -204,8 +204,7 @@ namespace Rendering
 			lookat = point3(0.0f, 0.0f, 0.0f);
 			vfov = 20.0f;
 			break;
-
-	//	default:
+			//	default:
 		case 5:
 			world = simple_light();
 			background = color(0.0f, 0.0f, 0.0f);
@@ -213,8 +212,39 @@ namespace Rendering
 			lookat = point3(0.0f, 2.0f, 0.0f);
 			vfov = 20.0f;
 			break;
+			//default:
+		case 6:
+			world = cornell_box();
+			aspect_ratio = 1.0;
+			image_width = 600;
+			//samples_per_pixel = 200;
+			background = color(0, 0, 0);
+			lookfrom = point3(278, 278, -800);
+			lookat = point3(278, 278, 0);
+			vfov = 40.0;
+			break;
+		//default:
+		case 7:
+			world = cornell_smoke();
+			aspect_ratio = 1.0;
+			image_width = 600;
+			//	samples_per_pixel = 200;
+			lookfrom = point3(278, 278, -800);
+			lookat = point3(278, 278, 0);
+			vfov = 40.0;
+			break;
+		default:
+		case 8:
+			world = final_scene();
+			aspect_ratio = 1.0;
+			image_width = 600;
+			//	samples_per_pixel = 10000;
+			background = color(0, 0, 0);
+			lookfrom = point3(478, 278, -600);
+			lookat = point3(278, 278, 0);
+			vfov = 40.0;
+			break;
 		}
-
 		// Camera
 
 		vec3 vup(0.0f, 1.0f, 0.0f);
@@ -290,29 +320,6 @@ namespace Rendering
 	}
 
 	
-	//color CpuWriteToTextureDemo::ray_color(const Hybrid::ray& r, const Hybrid::hittable& world, int depth)
-	//{
-	//	
-	//	hit_record rec;
-	//	// If we've exceeded the ray bounce limit, no more light is gathered.
-	//	if (depth <= 0)
-	//		return color(0, 0, 0);
-
-	//	if (world.hit(r, 0.001f, infinity, rec)) {
-	//		ray scattered;
-	//		color attenuation;
-	//		if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
-	//			return attenuation * ray_color(scattered, world, depth - 1);
-	//		return color(0, 0, 0);
-	//	}
-
-	//	vec3 unit_direction = unit_vector(r.direction());
-	//	float t = 0.5f * (unit_direction.y() + 1.0f);
-	//	color toReturn = (1.0f - t) * color(1.0f, 1.0f, 1.0f) + t * color(0.5f, 0.7f, 1.0f);
-	//	return toReturn;
-	//		
-	//}
-
 	color CpuWriteToTextureDemo::ray_color(const ray& r, const color& background, const hittable& world, int depth) {
 		hit_record rec;
 
@@ -365,6 +372,127 @@ namespace Rendering
 
 		objects.add(make_shared<sphere>(point3(0.0f, -10.0f, 0.0f), 10.0f, make_shared<lambertian>(checker)));
 		objects.add(make_shared<sphere>(point3(0.0f, 10.0f, 0.0f), 10.0f, make_shared<lambertian>(checker)));
+
+		return objects;
+	}
+
+	hittable_list CpuWriteToTextureDemo::cornell_box() {
+		hittable_list objects;
+
+		auto red = make_shared<lambertian>(color(.65f, .05f, .05f));
+		auto white = make_shared<lambertian>(color(.73f, .73f, .73f));
+		auto green = make_shared<lambertian>(color(.12f, .45f, .15f));
+		auto light = make_shared<diffuse_light>(color(15.0f, 15.0f, 15.0f));
+
+		objects.add(make_shared<yz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));
+		objects.add(make_shared<yz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));
+		objects.add(make_shared<xz_rect>(213.0f, 343.0f, 227.0f, 332.0f, 554.0f, light));
+		objects.add(make_shared<xz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));
+		objects.add(make_shared<xz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+		objects.add(make_shared<xy_rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+
+		shared_ptr<hittable> box1 = make_shared<box>(point3(0.0f, 0.0f, 0.0f), point3(165.0f, 330.0f, 165.0f), white);
+		box1 = make_shared<rotate_y>(box1, 15.0f);
+		box1 = make_shared<translate>(box1, vec3(265.0f, 0.0f, 295.0f));
+		objects.add(box1);
+
+		shared_ptr<hittable> box2 = make_shared<box>(point3(0.0f, 0.0f, 0.0f), point3(165.0f, 165.0f, 165.0f), white);
+		box2 = make_shared<rotate_y>(box2, -18.0f);
+		box2 = make_shared<translate>(box2, vec3(130.0f, 0.0f, 65.0f));
+		objects.add(box2);
+		return objects;
+	}
+
+	hittable_list CpuWriteToTextureDemo::cornell_smoke() {
+		hittable_list objects;
+
+		auto red = make_shared<lambertian>(color(.65f, .05f, .05f));
+		auto white = make_shared<lambertian>(color(.73f, .73f, .73f));
+		auto green = make_shared<lambertian>(color(.12f, .45f, .15f));
+		auto light = make_shared<diffuse_light>(color(7.0f, 7.0f, 7.0f));
+
+		objects.add(make_shared<yz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));
+		objects.add(make_shared<yz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));
+		objects.add(make_shared<xz_rect>(113.0f, 443.0f, 127.0f, 432.0f, 554.0f, light));
+		objects.add(make_shared<xz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+		objects.add(make_shared<xz_rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));
+		objects.add(make_shared<xy_rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+
+		shared_ptr<hittable> box1 = make_shared<box>(point3(0.0f, 0.0f, 0.0f), point3(165.0f, 330.0f, 165.0f), white);
+		box1 = make_shared<rotate_y>(box1, 15.0f);
+		box1 = make_shared<translate>(box1, vec3(265.0f, 0.0f, 295.0f));
+
+		shared_ptr<hittable> box2 = make_shared<box>(point3(0.0f, 0.0f, 0.0f), point3(165.0f, 165.0f, 165.0f), white);
+		box2 = make_shared<rotate_y>(box2, -18.0f);
+		box2 = make_shared<translate>(box2, vec3(130.0f, 0.0f, 65.0f));
+
+		objects.add(make_shared<constant_medium>(box1, 0.01f, color(0.0f, 0.0f, 0.0f)));
+		objects.add(make_shared<constant_medium>(box2, 0.01f, color(1.0f, 1.0f, 1.0f)));
+
+		return objects;
+	}
+
+
+	hittable_list CpuWriteToTextureDemo::final_scene() {
+		hittable_list boxes1;
+		auto ground = make_shared<lambertian>(color(0.48f, 0.83f, 0.53f));
+
+		//const int boxes_per_side = 20;
+		//for (int i = 0; i < boxes_per_side; i++) {
+		//	for (int j = 0; j < boxes_per_side; j++) {
+		//		auto w = 100.0f;
+		//		auto x0 = -1000.0f + i * w;
+		//		auto z0 = -1000.0f + j * w;
+		//		auto y0 = 0.0f;
+		//		auto x1 = x0 + w;
+		//		auto y1 = random_float(1, 101);
+		//		auto z1 = z0 + w;
+
+		//		boxes1.add(make_shared<box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
+		//	}
+		//}
+
+		hittable_list objects;
+
+		//objects.add(make_shared<bvh_node>(boxes1, 0.0f, 1.0f));
+
+		auto light = make_shared<diffuse_light>(color(7.0f, 7.0f, 7.0f));
+		objects.add(make_shared<xz_rect>(123.0f, 423.0f, 147.0f, 412.0f, 554.0f, light));
+
+		/*auto center1 = point3(400, 400, 200);
+		auto center2 = center1 + vec3(30, 0, 0);
+		auto moving_sphere_material = make_shared<lambertian>(color(0.7, 0.3, 0.1));
+		objects.add(make_shared<moving_sphere>(center1, center2, 0, 1, 50, moving_sphere_material));*/
+
+		objects.add(make_shared<sphere>(point3(260.0f, 150.0f, 45.0f), 50.0f, make_shared<dielectric>(1.5f)));
+		objects.add(make_shared<sphere>(
+			point3(0.0f, 150.0f, 145.0f), 50.0f, make_shared<metal>(color(0.8f, 0.8f, 0.9f), 1.0f)
+			));
+
+		auto boundary = make_shared<sphere>(point3(360.0f, 150.0f, 145.0f), 70.0f, make_shared<dielectric>(1.5f));
+		objects.add(boundary);
+		objects.add(make_shared<constant_medium>(boundary, 0.2f, color(0.2f, 0.4f, 0.9f)));
+		boundary = make_shared<sphere>(point3(0.0f, 0.0f, 0.0f), 5000.0f, make_shared<dielectric>(1.5f));
+		objects.add(make_shared<constant_medium>(boundary, .0001f, color(1.0f, 1.0f, 1.0f)));
+
+		/*auto emat = make_shared<lambertian>(make_shared<image_texture>("earthmap.jpg"));
+		objects.add(make_shared<sphere>(point3(400, 200, 400), 100, emat));
+		auto pertext = make_shared<noise_texture>(0.1);
+		objects.add(make_shared<sphere>(point3(220, 280, 300), 80, make_shared<lambertian>(pertext)));*/
+
+		//hittable_list boxes2;
+		//auto white = make_shared<lambertian>(color(.73f, .73f, .73f));
+		//int ns = 1000;
+		//for (int j = 0; j < ns; j++) {
+		//	boxes2.add(make_shared<sphere>(point3::random(0.0f, 165.0f), 10.0f, white));
+		//}
+
+		//objects.add(make_shared<translate>(
+		//	make_shared<rotate_y>(
+		//		make_shared<bvh_node>(boxes2, 0.0f, 1.0f), 15.0f),
+		//	vec3(-100.0f, 270.0f, 395.0f)
+		//	)
+		//);
 
 		return objects;
 	}

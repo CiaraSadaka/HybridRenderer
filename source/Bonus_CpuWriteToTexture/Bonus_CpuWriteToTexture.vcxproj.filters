@@ -57,6 +57,12 @@
       <Filter>Ray</Filter>
     </ClInclude>
     <ClInclude Include="PointLightMaterial.h" />
+    <ClInclude Include="box.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_medium.h">
+      <Filter>Ray</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

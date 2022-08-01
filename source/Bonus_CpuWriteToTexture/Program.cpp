@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	const wstring windowClassName = L"RenderingClass";
 	const wstring windowTitle = L"Bonus - Dynamic Texture to Full-Screen Quad";
 
-	const SIZE RenderTargetSize = { 1024, 786 };
+	const SIZE RenderTargetSize = { 600, 600 };
 	HWND windowHandle;
 	WNDCLASSEX window;
 

@@ -17,7 +17,7 @@ namespace Rendering::Hybrid
         bvh_node();
 
         bvh_node(const hittable_list& list, float time0, float time1)
-            : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
+            : bvh_node(list.objects, 0.0f, list.objects.size(), time0, time1)
         {}
 
         bvh_node(
@@ -35,6 +35,29 @@ namespace Rendering::Hybrid
         aabb box;
     };
 
+    //class bvh_node : public hittable {
+    //public:
+    //    bvh_node();
+
+    //    bvh_node(const hittable_list& list, float time0, float time1)
+    //        : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
+    //    {}
+
+    //    bvh_node(
+    //        const std::vector<shared_ptr<hittable>>& src_objects,
+    //        size_t start, size_t end, double time0, double time1);
+
+    //    virtual bool hit(
+    //        const ray& r, float t_min, float t_max, hit_record& rec) const override;
+
+    //    virtual bool bounding_box(float time0, float time1, aabb& output_box) const override;
+
+    //public:
+    //    shared_ptr<hittable> left;
+    //    shared_ptr<hittable> right;
+    //    aabb box;
+    //};
+
 
     inline bool box_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis) {
         aabb box_a;
@@ -47,20 +70,20 @@ namespace Rendering::Hybrid
     }
 
 
-    bool box_x_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
+    inline bool box_x_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
         return box_compare(a, b, 0);
     }
 
-    bool box_y_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
+    inline bool box_y_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
         return box_compare(a, b, 1);
     }
 
-    bool box_z_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
+    inline bool box_z_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
         return box_compare(a, b, 2);
     }
 
 
-    bvh_node::bvh_node(
+    inline bvh_node::bvh_node(
         const std::vector<shared_ptr<hittable>>& src_objects,
         size_t start, size_t end, float time0, float time1
     ) {
@@ -71,27 +94,27 @@ namespace Rendering::Hybrid
             : (axis == 1) ? box_y_compare
             : box_z_compare;
 
-        size_t object_span = end - start;
+        float object_span = static_cast<float>(end - start);
 
         if (object_span == 1) {
-            left = right = objects[start];
+            left = right = objects[static_cast<float>(start)];
         }
         else if (object_span == 2) {
-            if (comparator(objects[start], objects[start + 1])) {
-                left = objects[start];
-                right = objects[start + 1];
+            if (comparator(objects[start], objects[start + 1.0f])) {
+                left = objects[static_cast<float>(start)];
+                right = objects[static_cast<float>(start) + 1.0f];
             }
             else {
-                left = objects[start + 1];
-                right = objects[start];
+                left = objects[static_cast<float>(start) + 1.0f];
+                right = objects[static_cast<float>(start)];
             }
         }
         else {
-            std::sort(objects.begin() + start, objects.begin() + end, comparator);
+            std::sort(objects.begin() + start, objects.begin() + static_cast<float>(end), comparator);
 
-            auto mid = start + object_span / 2;
-            left = make_shared<bvh_node>(objects, start, mid, time0, time1);
-            right = make_shared<bvh_node>(objects, mid, end, time0, time1);
+            auto mid = start + object_span / 2.0f;
+            left = make_shared<bvh_node>(objects, static_cast<float>(start), mid, time0, time1);
+            right = make_shared<bvh_node>(objects, mid, static_cast<float>(end), time0, time1);
         }
 
         aabb box_left, box_right;
@@ -117,6 +140,8 @@ namespace Rendering::Hybrid
 
 
     inline bool bvh_node::bounding_box(float time0, float time1, aabb& output_box) const {
+        time0;
+        time1;
         output_box = box;
         return true;
     }
