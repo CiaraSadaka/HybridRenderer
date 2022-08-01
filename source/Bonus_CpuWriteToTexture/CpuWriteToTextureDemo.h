@@ -71,7 +71,6 @@ namespace Rendering
 		hittable_list two_spheres();
 		hittable_list two_perlin_spheres();
 		hittable_list simple_light();
-		hittable_list earth();
 		/*XMFLOAT4 unit_vector(XMFLOAT4 v);
 		float dot(const XMFLOAT4& u, const XMFLOAT4& v);
 

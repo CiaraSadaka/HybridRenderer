@@ -205,10 +205,7 @@
     <ClInclude Include="RayHelper.h" />
     <ClInclude Include="rcCamera.h" />
     <ClInclude Include="RenderingGame.h" />
-    <ClInclude Include="rtw_stb_image.h" />
     <ClInclude Include="sphere.h" />
-    <ClInclude Include="stb_image_read.h" />
-    <ClInclude Include="stb_image_write.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
