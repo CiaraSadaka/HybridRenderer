@@ -19,7 +19,7 @@ namespace Rendering
 	class RastMode final : public Library::DrawableGameComponent
 	{
 	public:
-		RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, float orbitalDist, std::wstring texName, float scale, float ambientLight, float axialTilt, float rotationalPeriod, float orbitalPeriod, std::shared_ptr<RastMode> parent);
+		RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, float orbitalDist, std::wstring texName, float scale, float ambientLight, float axialTilt, float rotationalPeriod, float orbitalPeriod, std::shared_ptr<RastMode> parent, float x, float y, float z);
 		RastMode(const RastMode&) = delete;
 		RastMode(RastMode&&) = default;
 		RastMode& operator=(const RastMode&) = default;

@@ -80,10 +80,10 @@ namespace Rendering
 
 	/*	mRastMode = make_shared<RastMode>(*this, camera, 0.0f, 0.0f, 0.0f);
 		mComponents.push_back(mRastMode);*/
-		mEarth = make_shared<RastMode>(*this, camera, 0.0f, L"Textures\\EarthComposite.dds"s, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, nullptr);
+		mEarth = make_shared<RastMode>(*this, camera, 0.0f, L"Textures\\EarthComposite.dds"s, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, nullptr, 1.0f, 1.0f, 1.0f);
 		mComponents.push_back(mEarth);
 
-		mEarth2 = make_shared<RastMode>(*this, camera, 5.0f, L"Textures\\EarthComposite.dds"s, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, nullptr);
+		mEarth2 = make_shared<RastMode>(*this, camera, 0.0f, L"Textures\\EarthComposite.dds"s, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, nullptr, 10.0f, 1.0f, 1.0f);
 		mComponents.push_back(mEarth2);
 
 		auto imGui = make_shared<ImGuiComponent>(*this);

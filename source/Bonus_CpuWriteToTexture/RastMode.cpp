@@ -18,9 +18,9 @@ using namespace DirectX;
 
 namespace Rendering
 {
-	RastMode::RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, float orbitalDist, std::wstring texName, float scale, float ambientLight, float axialTilt, float rotationalPeriod, float orbitalPeriod, std::shared_ptr<RastMode> parent) :
-		DrawableGameComponent(game, camera), mTexName(texName), mScale(scale), mAxialTilt(axialTilt), mRotationalPeriod(rotationalPeriod), mOrbitalPeriod(orbitalPeriod), mParent(parent)
-	{
+	RastMode::RastMode(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, float orbitalDist, std::wstring texName, float scale, float ambientLight, float axialTilt, float rotationalPeriod, float orbitalPeriod, std::shared_ptr<RastMode> parent, float x, float y, float z) :
+		DrawableGameComponent(game, camera), mTexName(texName), mScale(scale), mAxialTilt(axialTilt), mRotationalPeriod(rotationalPeriod), mOrbitalPeriod(orbitalPeriod), mParent(parent), _x(x), _y(y), _z(z)
+ 	{
 		mScale = scale;
 		mAmbientLight = ambientLight;
 		mOrbitalDistance = orbitalDist;
@@ -159,18 +159,15 @@ namespace Rendering
 		}
 
 		XMStoreFloat4x4(&mScaleMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixScaling(mScale, mScale, mScale)));
+		XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixTranslation(_x, _y, _z)));
+		XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixRotationY(mModelOrbitalAngle)));
 	}
 
 	void RastMode::Update(const GameTime& gameTime)
 	{
 		if (mAnimationEnabled)
 		{
-			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * sRotationRate / mRotationalPeriod;
-			mModelOrbitalAngle += gameTime.ElapsedGameTimeSeconds().count() * sOrbitalRate / mOrbitalPeriod;
-	//		XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mScaleMatrix), XMMatrixRotationY(mModelRotationAngle)));
-			//XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixRotationX(radiansToDegrees(mAxialTilt))));
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixTranslation(mOrbitalDistance, 0, 0)));
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&mWorldMatrix), XMMatrixRotationY(mModelOrbitalAngle)));
+
 
 
 			mUpdateMaterial = true;
