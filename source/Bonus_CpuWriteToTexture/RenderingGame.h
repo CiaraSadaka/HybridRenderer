@@ -42,5 +42,9 @@ namespace Rendering
 		std::shared_ptr<CpuWriteToTextureDemo> mCpuWriteToTextureDemo;
 		std::shared_ptr<Library::Grid> mGrid;
 		std::shared_ptr<RastMode> mRastMode;
+		float mAmbientLightIntensity{ 0.0f };
+		float mPointLightIntensity{ 0.0f };
+		float mSpecularIntensity{ 0.0f };
+		float mSpecularPower{ 128.0f };
 	};
 }

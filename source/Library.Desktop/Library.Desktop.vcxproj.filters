@@ -66,6 +66,9 @@
       <Filter>Content\Fonts</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="..\..\content\Models\PointLightProxy.obj.bin">
+      <Filter>Content\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Textures\EarthComposite.dds">
@@ -73,6 +76,9 @@
     </Image>
     <Image Include="Content\Models\Sphere.obj.bin">
       <Filter>Content\Models</Filter>
+    </Image>
+    <Image Include="..\..\content\Textures\EarthSpecularMap.png">
+      <Filter>Content\Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>

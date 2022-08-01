@@ -89,6 +89,10 @@ namespace Rendering
 
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
 
+		mAmbientLightIntensity = mRastMode->AmbientLightIntensity();
+		mPointLightIntensity = mRastMode->PointLightIntensity();
+		mSpecularIntensity = mRastMode->SpecularIntensity();
+		mSpecularPower = mRastMode->SpecularPower();
 	//	mCpuWriteToTextureDemo = std::make_shared<CpuWriteToTextureDemo>(mGame, camera);
 	}
 
@@ -109,6 +113,10 @@ namespace Rendering
 		
 		}
 		mImGuiComponent->Update(gameTime);
+
+		//UpdateAmbientLightIntensity(gameTime);
+		//UpdatePointLight(gameTime);
+		//UpdateSpecularLight(gameTime);
 
 		Game::Update(gameTime);
 

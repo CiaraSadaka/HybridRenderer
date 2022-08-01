@@ -104,10 +104,12 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\content\Models\PointLightProxy.obj.bin" />
     <None Include="Content\Fonts\Arial_14_Regular.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\content\Textures\EarthSpecularMap.png" />
     <Image Include="Content\Models\Sphere.obj.bin" />
     <Image Include="Content\Textures\EarthComposite.dds" />
   </ItemGroup>

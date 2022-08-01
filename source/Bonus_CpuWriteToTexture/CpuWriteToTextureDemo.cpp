@@ -172,6 +172,7 @@ namespace Rendering
 			vfov = 20.0f;
 			aperture = 0.1f;
 			break;
+		default:
 		case 2:
 			world = two_spheres();
 			background = color(0.70f, 0.80f, 1.00f);
@@ -179,7 +180,7 @@ namespace Rendering
 			lookat = point3(0.0f, 0.0f, 0.0f);
 			vfov = 20.0f;
 			break;
-		default:
+		//default:
 		case 3:
 			world = two_perlin_spheres();
 			background = color(0.70f, 0.80f, 1.00f);
