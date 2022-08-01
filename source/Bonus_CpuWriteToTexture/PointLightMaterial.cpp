@@ -141,7 +141,7 @@ namespace Rendering
 		auto vertexShader = content.Load<VertexShader>(L"Shaders\\TexturedModelVS.cso"s);
 		SetShader(vertexShader);
 
-		auto pixelShader = content.Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\PointLightPS.cso");
 		SetShader(pixelShader);
 
 		auto direct3DDevice = mGame->Direct3DDevice();

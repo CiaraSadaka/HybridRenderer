@@ -84,6 +84,8 @@ namespace Rendering
 		mRastMode = make_shared<RastMode>(*this, camera);
 		mComponents.push_back(mRastMode);
 
+		
+
 		Game::Initialize();
 
 

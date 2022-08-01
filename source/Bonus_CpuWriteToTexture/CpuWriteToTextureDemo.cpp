@@ -60,6 +60,15 @@ namespace Rendering
 
 	void CpuWriteToTextureDemo::Draw(const GameTime& gameTime)
 	{
+	/*	auto pixelShader = content.Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
+		SetShader(pixelShader);*/
+		/*_fullScreenQuad.Initialize();
+		auto fullScreenQuadMaterial = _fullScreenQuad.Material();
+		fullScreenQuadMaterial->SetTexture(_colorMap->ShaderResourceView().get());*/
+
+		//auto pixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
+		//fullScreenQuadMaterial->SetShader(pixelShader);
+
 		if (high_resolution_clock::now() > _lastTextureUpdate + _textureUpdateDelay)
 		{
 			com_ptr<ID3D11Resource> colorMapResource;
